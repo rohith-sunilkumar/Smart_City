@@ -31,6 +31,36 @@ router.get('/', protect, authorize('mayor'), async (req, res) => {
 // @route   POST /api/mayor-alert
 // @desc    Send a new mayor alert to all users and admins
 // @access  Private (Mayor only)
+// @route   DELETE /api/mayor-alert/:id
+// @desc    Delete a mayor alert
+// @access  Private (Mayor only)
+router.delete('/:id', protect, authorize('mayor'), async (req, res) => {
+  try {
+    const alert = await MayorAlert.findById(req.params.id);
+    
+    if (!alert) {
+      return res.status(404).json({
+        success: false,
+        message: 'Alert not found'
+      });
+    }
+
+    await alert.remove();
+
+    res.json({
+      success: true,
+      message: 'Alert deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting mayor alert:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while deleting alert',
+      error: error.message
+    });
+  }
+});
+
 router.post('/', protect, authorize('mayor'), async (req, res) => {
   try {
     const { title, message } = req.body;

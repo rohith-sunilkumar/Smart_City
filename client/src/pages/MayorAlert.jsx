@@ -40,6 +40,22 @@ const MayorAlert = () => {
     }
   };
 
+  const deleteAlert = async (alertId) => {
+    if (!window.confirm('Are you sure you want to delete this alert?')) {
+      return;
+    }
+    
+    try {
+      const headers = { Authorization: `Bearer ${token}` };
+      await axios.delete(`${API_URL}/api/mayor-alert/${alertId}`, { headers });
+      // Refresh the alerts list
+      await fetchAlerts();
+    } catch (error) {
+      console.error('Error deleting alert:', error);
+      alert('Failed to delete alert. Please try again.');
+    }
+  };
+
   const sendAlert = async (e) => {
     e.preventDefault();
     
@@ -75,10 +91,23 @@ const MayorAlert = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString();
+    const date = new Date(dateString);
+    return date.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
-  if (loading) {
+  // Import X (close) icon from Lucide React at the top of the file
+  const handleDelete = (alertId, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    deleteAlert(alertId);
+  };  if (loading) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -181,9 +210,20 @@ const MayorAlert = () => {
                         <h3 className="font-semibold text-gray-100 text-sm">
                           {alert.title}
                         </h3>
-                        <div className="flex items-center text-xs text-gray-400">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {formatDate(alert.createdAt)}
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center text-xs text-gray-400">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {formatDate(alert.createdAt)}
+                          </div>
+                          <button
+                            onClick={(e) => handleDelete(alert._id, e)}
+                            className="p-1 hover:bg-red-500/20 rounded-full transition-colors"
+                            title="Delete alert"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400 hover:text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 6L6 18M6 6l12 12"/>
+                            </svg>
+                          </button>
                         </div>
                       </div>
                       <p className="text-gray-300 text-sm mb-2">
