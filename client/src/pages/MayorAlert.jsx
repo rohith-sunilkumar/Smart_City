@@ -16,6 +16,9 @@ const MayorAlert = () => {
   const [sending, setSending] = useState(false);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -27,16 +30,26 @@ const MayorAlert = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
-  const fetchAlerts = async () => {
+  const fetchAlerts = async (pageNum = 1, append = false) => {
     try {
-      setLoading(true);
+      if (pageNum === 1) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+      
       const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get(`${API_URL}/api/mayor-alert`, { headers });
-      setAlerts(response.data.data.alerts || []);
+      const response = await axios.get(`${API_URL}/api/mayor-alert?page=${pageNum}`, { headers });
+      
+      const newAlerts = response.data.data.alerts || [];
+      setAlerts(prev => pageNum === 1 ? newAlerts : [...prev, ...newAlerts]);
+      setHasMore(response.data.data.pagination.hasMore);
+      setPage(pageNum);
     } catch (error) {
       console.error('Error fetching alerts:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -46,13 +59,21 @@ const MayorAlert = () => {
     }
     
     try {
+      setLoading(true);
       const headers = { Authorization: `Bearer ${token}` };
-      await axios.delete(`${API_URL}/api/mayor-alert/${alertId}`, { headers });
-      // Refresh the alerts list
-      await fetchAlerts();
+      const response = await axios.delete(`${API_URL}/api/mayor-alert/${alertId}`, { headers });
+      
+      if (response.data.success) {
+        // Remove the alert from the local state instead of refetching
+        setAlerts(prevAlerts => prevAlerts.filter(alert => alert._id !== alertId));
+      } else {
+        throw new Error(response.data.message || 'Failed to delete alert');
+      }
     } catch (error) {
       console.error('Error deleting alert:', error);
-      alert('Failed to delete alert. Please try again.');
+      alert(error.response?.data?.message || 'Failed to delete alert. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -202,9 +223,18 @@ const MayorAlert = () => {
                 <h2 className="text-xl font-semibold text-gray-100">Recent Alerts</h2>
               </div>
               
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div 
+                className="space-y-4 max-h-96 overflow-y-auto"
+                onScroll={(e) => {
+                  const { scrollTop, scrollHeight, clientHeight } = e.target;
+                  if (scrollHeight - scrollTop <= clientHeight * 1.5 && hasMore && !loadingMore) {
+                    fetchAlerts(page + 1, true);
+                  }
+                }}
+              >
                 {alerts.length > 0 ? (
-                  alerts.map((alert, index) => (
+                  <>
+                    {alerts.map((alert, index) => (
                     <div key={alert._id || index} className="bg-gradient-to-r from-red-600/10 to-orange-600/10 border border-red-500/30 rounded-lg p-4">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-semibold text-gray-100 text-sm">
@@ -216,13 +246,22 @@ const MayorAlert = () => {
                             {formatDate(alert.createdAt)}
                           </div>
                           <button
-                            onClick={(e) => handleDelete(alert._id, e)}
-                            className="p-1 hover:bg-red-500/20 rounded-full transition-colors"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              deleteAlert(alert._id);
+                            }}
+                            className="p-1 hover:bg-red-500/20 rounded-full transition-colors flex items-center justify-center"
                             title="Delete alert"
+                            disabled={loading}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400 hover:text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M18 6L6 18M6 6l12 12"/>
-                            </svg>
+                            {loading ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-400"></div>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-red-400 hover:text-red-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 6L6 18M6 6l12 12"/>
+                              </svg>
+                            )}
                           </button>
                         </div>
                       </div>

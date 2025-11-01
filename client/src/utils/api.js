@@ -1,7 +1,15 @@
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
-const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5002';
+const BASE_URL = import.meta.env.VITE_API_URL 
+  ? import.meta.env.VITE_API_URL.replace('/api', '')
+  : 'http://localhost:5002';
+
+// Log the API configuration in development
+if (import.meta.env.DEV) {
+  console.log('API_URL:', API_URL);
+  console.log('BASE_URL:', BASE_URL);
+}
 
 // Helper function to get full image URL
 export const getImageUrl = (imagePath) => {
@@ -24,6 +32,16 @@ const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
+  },
+  // Add request timeout
+  timeout: 10000,
+  // Enable HTTP keep-alive
+  httpAgent: new http.Agent({ keepAlive: true }),
+  // Enable response compression
+  decompress: true,
+  // Cache successful GET requests for 5 minutes
+  cache: {
+    maxAge: 5 * 60 * 1000
   }
 });
 

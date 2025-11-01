@@ -61,7 +61,8 @@ router.delete('/:id', protect, authorize('mayor'), async (req, res) => {
       });
     }
 
-    await alert.remove();
+    // Use deleteOne instead of remove (which is deprecated)
+    await MayorAlert.deleteOne({ _id: req.params.id });
 
     res.json({
       success: true,
