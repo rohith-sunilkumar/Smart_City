@@ -1,0 +1,32 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Model files (large)
+models/*.h5
+models/civic_issue_classifier/
+
+# Keep metadata and logs
+!models/model_metadata.json
+!models/*.png
+
+# TensorBoard logs
+models/logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/

@@ -1,0 +1,80 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- City skyline background -->
+  <g opacity="0.3">
+    <rect x="270" y="520" width="80" height="180" fill="#D1D5DB" rx="4"/>
+    <rect x="380" y="480" width="60" height="220" fill="#D1D5DB" rx="4"/>
+    <rect x="470" y="500" width="90" height="200" fill="#D1D5DB" rx="4"/>
+    <rect x="590" y="460" width="70" height="240" fill="#D1D5DB" rx="4"/>
+    <rect x="690" y="490" width="85" height="210" fill="#D1D5DB" rx="4"/>
+    <rect x="800" y="520" width="65" height="180" fill="#D1D5DB" rx="4"/>
+  </g>
+  
+  <!-- Clouds -->
+  <ellipse cx="390" cy="280" rx="60" ry="35" fill="#E5E7EB"/>
+  <ellipse cx="420" cy="290" rx="45" ry="30" fill="#E5E7EB"/>
+  <ellipse cx="730" cy="320" rx="55" ry="32" fill="#E5E7EB"/>
+  <ellipse cx="760" cy="330" rx="40" ry="28" fill="#E5E7EB"/>
+  <ellipse cx="850" cy="420" rx="50" ry="30" fill="#E5E7EB"/>
+  
+  <!-- Large upward arrow base -->
+  <path d="M 200 750 L 350 600 L 450 650 L 550 550 L 650 600 L 800 450 L 850 500 L 900 450 L 900 850 L 200 850 Z" fill="#93C5FD" opacity="0.6"/>
+  <path d="M 200 750 L 350 600 L 450 650 L 550 550 L 650 600 L 800 450 L 850 500 L 900 450" stroke="#3B82F6" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Arrow pointing up -->
+  <path d="M 750 350 L 850 450 L 950 350" stroke="#3B82F6" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 850 450 L 850 550" stroke="#3B82F6" stroke-width="12" stroke-linecap="round"/>
+  
+  <!-- Main arrow platform -->
+  <path d="M 300 700 L 650 500 L 750 520 L 850 480 L 900 500 L 900 750 L 300 750 Z" fill="#60A5FA"/>
+  
+  <!-- Person 1 (sitting on arrow, reaching down) -->
+  <g transform="translate(680, 420)">
+    <!-- Leg -->
+    <path d="M 0 80 Q -10 100 -15 130 L -20 160" stroke="#1F2937" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 0 80 Q 10 100 15 130 L 20 160" stroke="#1F2937" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <!-- Shoe -->
+    <ellipse cx="-20" cy="165" rx="12" ry="8" fill="#1F2937"/>
+    <ellipse cx="20" cy="165" rx="12" ry="8" fill="#1F2937"/>
+    <!-- Body -->
+    <ellipse cx="0" cy="50" rx="35" ry="45" fill="#BFDBFE"/>
+    <!-- Arm reaching down -->
+    <path d="M -25 40 Q -40 60 -50 90 L -60 120" stroke="#BFDBFE" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <ellipse cx="-60" cy="125" rx="10" ry="12" fill="#FCA5A5"/>
+    <!-- Other arm -->
+    <path d="M 25 40 Q 35 55 40 75" stroke="#BFDBFE" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <ellipse cx="42" cy="80" rx="10" ry="12" fill="#FCA5A5"/>
+    <!-- Head -->
+    <ellipse cx="0" cy="0" rx="28" ry="32" fill="#FCA5A5"/>
+    <!-- Hair -->
+    <path d="M -20 -15 Q -25 -25 -20 -30 Q -10 -35 0 -32 Q 10 -35 20 -30 Q 25 -25 20 -15" fill="#1F2937"/>
+  </g>
+  
+  <!-- Person 2 (climbing up, reaching up) -->
+  <g transform="translate(480, 520)">
+    <!-- Leg -->
+    <path d="M -10 80 Q -15 100 -20 130 L -25 160" stroke="#1F2937" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 10 80 Q 5 105 0 135 L -5 165" stroke="#1F2937" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <!-- Shoe -->
+    <ellipse cx="-25" cy="165" rx="12" ry="8" fill="#1F2937"/>
+    <ellipse cx="-5" cy="170" rx="12" ry="8" fill="#1F2937"/>
+    <!-- Body -->
+    <ellipse cx="0" cy="50" rx="35" ry="45" fill="#BFDBFE"/>
+    <!-- Arm reaching up -->
+    <path d="M -20 30 Q -30 10 -40 -20 L -50 -50" stroke="#BFDBFE" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <ellipse cx="-50" cy="-55" rx="10" ry="12" fill="#FCA5A5"/>
+    <!-- Other arm -->
+    <path d="M 20 40 Q 30 50 35 65" stroke="#BFDBFE" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <ellipse cx="37" cy="70" rx="10" ry="12" fill="#FCA5A5"/>
+    <!-- Head -->
+    <ellipse cx="0" cy="0" rx="28" ry="32" fill="#FCA5A5"/>
+    <!-- Hair -->
+    <path d="M -22 -10 Q -28 -20 -25 -28 Q -15 -35 0 -32 Q 15 -35 25 -28 Q 28 -20 22 -10" fill="#1F2937"/>
+    <!-- Tie -->
+    <path d="M 0 25 L -5 50 L 0 65 L 5 50 Z" fill="#3B82F6"/>
+  </g>
+  
+  <!-- Bottom clouds -->
+  <ellipse cx="250" cy="820" rx="80" ry="35" fill="#DBEAFE" opacity="0.8"/>
+  <ellipse cx="550" cy="850" rx="100" ry="40" fill="#DBEAFE" opacity="0.8"/>
+  <ellipse cx="800" cy="830" rx="90" ry="38" fill="#DBEAFE" opacity="0.8"/>
+</svg>

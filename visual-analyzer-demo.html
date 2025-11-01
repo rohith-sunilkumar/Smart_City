@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Son of Anton - Visual Analyzer Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.1em;
+            color: #333;
+        }
+        
+        .priority-high {
+            color: #dc3545;
+            font-weight: 700;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: 700;
+        }
+        
+        .priority-low {
+            color: #28a745;
+            font-weight: 700;
+        }
+        
+        .confidence {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .notes {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 10px;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin-top: 20px;
+        }
+        
+        .examples {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e7f3ff;
+            border-radius: 10px;
+        }
+        
+        .examples h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .example-btn {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Son of Anton</h1>
+            <p>Local Visual Analyzer Demo - No GPT Required!</p>
+        </div>
+        
+        <div class="content">
+            <form id="analyzeForm">
+                <div class="form-group">
+                    <label for="title">Issue Title</label>
+                    <input type="text" id="title" placeholder="e.g., Dangerous pothole" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" placeholder="Describe the civic issue in detail..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location (Optional)</label>
+                    <input type="text" id="location" placeholder="e.g., Main Street, near intersection">
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    <span id="btnText">🔍 Analyze Issue</span>
+                    <span id="btnLoader" style="display: none;"><span class="loader"></span> Analyzing...</span>
+                </button>
+            </form>
+            
+            <div id="result" class="result">
+                <h3>📊 Analysis Result</h3>
+                
+                <div class="result-item">
+                    <div class="result-label">Department</div>
+                    <div class="result-value" id="department">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Priority Level</div>
+                    <div class="result-value" id="priority">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">Confidence Score</div>
+                    <div class="result-value">
+                        <span class="confidence" id="confidence">-</span>
+                    </div>
+                </div>
+                
+                <div class="notes">
+                    <strong>📝 Analysis Notes:</strong>
+                    <p id="notes">-</p>
+                </div>
+            </div>
+            
+            <div id="error" class="error" style="display: none;">
+                <strong>⚠️ Error:</strong>
+                <p id="errorMessage">-</p>
+            </div>
+            
+            <div class="examples">
+                <h4>💡 Try These Examples:</h4>
+                <button class="example-btn" onclick="loadExample(1)">Pothole</button>
+                <button class="example-btn" onclick="loadExample(2)">Garbage</button>
+                <button class="example-btn" onclick="loadExample(3)">Exposed Wire</button>
+                <button class="example-btn" onclick="loadExample(4)">Stagnant Water</button>
+                <button class="example-btn" onclick="loadExample(5)">Broken Light</button>
+                <button class="example-btn" onclick="loadExample(6)">Dead Animal</button>
+                <button class="example-btn" onclick="loadExample(7)">Fire</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:5000/api/visual-analysis/analyze';
+        
+        const examples = {
+            1: {
+                title: 'Dangerous pothole',
+                description: 'Large pothole on main road causing accidents and traffic delays',
+                location: 'Main Street, near intersection'
+            },
+            2: {
+                title: 'Garbage overflow',
+                description: 'Overflowing garbage pile on street corner with foul smell',
+                location: 'Park Avenue'
+            },
+            3: {
+                title: 'Exposed electrical wire',
+                description: 'Dangerous exposed electrical wire hanging from pole, sparking',
+                location: 'Market Street'
+            },
+            4: {
+                title: 'Stagnant water',
+                description: 'Blocked drainage system with stagnant water, mosquito breeding ground',
+                location: 'Residential Area'
+            },
+            5: {
+                title: 'Broken streetlight',
+                description: 'Street light not working, area is very dark at night',
+                location: '5th Avenue'
+            },
+            6: {
+                title: 'Dead animal on road',
+                description: 'Dead dog on the road, causing traffic issues and health hazard',
+                location: 'Highway 101'
+            },
+            7: {
+                title: 'Fire outbreak',
+                description: 'Small fire in garbage dump, smoke visible, fire spreading',
+                location: 'Industrial Area'
+            }
+        };
+        
+        function loadExample(num) {
+            const example = examples[num];
+            document.getElementById('title').value = example.title;
+            document.getElementById('description').value = example.description;
+            document.getElementById('location').value = example.location;
+        }
+        
+        document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const location = document.getElementById('location').value;
+            
+            // Show loading
+            document.getElementById('btnText').style.display = 'none';
+            document.getElementById('btnLoader').style.display = 'inline';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').style.display = 'none';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        location
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show result
+                    document.getElementById('department').textContent = data.data.predicted_department;
+                    
+                    const priority = data.data.priority_level;
+                    const priorityEl = document.getElementById('priority');
+                    priorityEl.textContent = priority;
+                    priorityEl.className = 'result-value priority-' + priority.toLowerCase();
+                    
+                    const confidencePercent = (data.data.confidence_score * 100).toFixed(0);
+                    document.getElementById('confidence').textContent = confidencePercent + '%';
+                    
+                    document.getElementById('notes').textContent = data.data.notes;
+                    
+                    document.getElementById('result').classList.add('show');
+                } else {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = error.message;
+                document.getElementById('error').style.display = 'block';
+            } finally {
+                // Hide loading
+                document.getElementById('btnText').style.display = 'inline';
+                document.getElementById('btnLoader').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
