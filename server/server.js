@@ -32,7 +32,12 @@ const io = initializeSocket(httpServer);
 console.log('🔌 Socket.IO initialized');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',  // WARNING: This is temporary for debugging
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

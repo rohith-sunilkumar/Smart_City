@@ -15,9 +15,17 @@ const otpStore = new Map();
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: '30d'
-  });
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined in environment variables');
+  }
+  try {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+      expiresIn: '30d'
+    });
+  } catch (error) {
+    console.error('Error generating JWT token:', error);
+    throw error;
+  }
 };
 
 // @route   POST /api/auth/register
@@ -160,9 +168,12 @@ router.post('/login', [
 
     const { email, password } = req.body;
 
+    console.log('Login attempt for email:', email);
+
     // Find user
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
+      console.log('User not found with email:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -170,11 +181,20 @@ router.post('/login', [
     }
 
     // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({
+    try {
+      const isMatch = await user.comparePassword(password);
+      if (!isMatch) {
+        console.log('Password mismatch for user:', email);
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid credentials'
+        });
+      }
+    } catch (error) {
+      console.error('Error comparing password:', error);
+      return res.status(500).json({
         success: false,
-        message: 'Invalid credentials'
+        message: 'Error during login'
       });
     }
 
