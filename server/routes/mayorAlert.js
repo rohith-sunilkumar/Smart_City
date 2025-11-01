@@ -6,17 +6,33 @@ import { protect, authorize } from '../middleware/auth.js';
 const router = express.Router();
 
 // @route   GET /api/mayor-alert
-// @desc    Get all mayor alerts
+// @desc    Get all mayor alerts with pagination
 // @access  Private (Mayor only)
 router.get('/', protect, authorize('mayor'), async (req, res) => {
   try {
-    const alerts = await MayorAlert.find()
-      .sort({ createdAt: -1 })
-      .limit(20); // Get last 20 alerts
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const [alerts, total] = await Promise.all([
+      MayorAlert.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(), // Use lean() for better performance
+      MayorAlert.countDocuments()
+    ]);
 
     res.json({
       success: true,
-      data: { alerts }
+      data: { 
+        alerts,
+        pagination: {
+          current: page,
+          total: Math.ceil(total / limit),
+          hasMore: skip + alerts.length < total
+        }
+      }
     });
   } catch (error) {
     console.error('Error fetching mayor alerts:', error);

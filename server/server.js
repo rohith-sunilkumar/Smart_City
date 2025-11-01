@@ -24,6 +24,18 @@ dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 
+// Enable compression for all responses
+import compression from 'compression';
+app.use(compression());
+
+// Enable response caching
+import responseTime from 'response-time';
+app.use(responseTime());
+
+// Add security headers
+import helmet from 'helmet';
+app.use(helmet());
+
 // Connect to MongoDB
 connectDB();
 
